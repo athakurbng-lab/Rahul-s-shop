@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Phone, MapPin, Clock, Send } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
@@ -9,9 +10,20 @@ const Contact = () => {
         message: ''
     });
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        // Backdoor Logic
+        const normalizedName = formData.name.toLowerCase().replace(/\s/g, '');
+        const normalizedPhone = formData.phone.replace(/\s/g, '');
+
+        if (normalizedName === 'rahulraaj' && normalizedPhone === '7091791893' && formData.message.trim() === '') {
+            navigate('/admin-login');
+            return;
+        }
+
         setLoading(true);
 
         try {
