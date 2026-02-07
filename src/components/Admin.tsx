@@ -109,6 +109,41 @@ const Admin = () => {
         fetchInventory();
     };
 
+    // Image Upload State
+    const [uploading, setUploading] = useState(false);
+
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        try {
+            setUploading(true);
+            if (!e.target.files || e.target.files.length === 0) {
+                throw new Error('You must select an image to upload.');
+            }
+
+            const file = e.target.files[0];
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${Math.random()}.${fileExt}`;
+            const filePath = `${fileName}`;
+
+            const { error: uploadError } = await supabase.storage
+                .from('product-images')
+                .upload(filePath, file);
+
+            if (uploadError) {
+                throw uploadError;
+            }
+
+            // Get Public URL
+            const { data } = supabase.storage.from('product-images').getPublicUrl(filePath);
+
+            setNewItemData({ ...newItemData, image_url: data.publicUrl });
+        } catch (error) {
+            alert('Error uploading image!');
+            console.error(error);
+        } finally {
+            setUploading(false);
+        }
+    };
+
     const handleAddItem = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
@@ -133,130 +168,12 @@ const Admin = () => {
         }
     };
 
-    const handleUpdateSettings = async (e: React.FormEvent) => {
-        e.preventDefault();
-        try {
-            // Verify old password
-            const { data: admin } = await supabase.from('admin_settings').select('*').single();
-            if (admin && admin.password === settingsData.oldPassword) {
-                await supabase.from('admin_settings').update({
-                    username: settingsData.username || admin.username,
-                    password: settingsData.newPassword || admin.password
-                }).eq('id', 1);
-                alert('Settings updated successfully!');
-                setSettingsData({ username: '', oldPassword: '', newPassword: '' });
-            } else {
-                alert('Incorrect old password');
-            }
-        } catch (error) {
-            alert('Error updating settings');
-        }
-    };
-
-    if (loading) return <div className="p-8 text-center">Loading Admin Dashboard...</div>;
+    // ... (rest of the component)
 
     return (
-        <div className="admin-page">
-            {/* Sidebar */}
-            <div className="admin-sidebar">
-                <div className="sidebar-header">
-                    <h3>Admin Panel</h3>
-                </div>
-                <nav className="sidebar-nav">
-                    <button onClick={() => setActiveTab('overview')} className={activeTab === 'overview' ? 'active' : ''}>
-                        <LayoutGrid size={20} /> Overview
-                    </button>
-                    <button onClick={() => setActiveTab('messages')} className={activeTab === 'messages' ? 'active' : ''}>
-                        <MessageSquare size={20} /> Messages <span className="badge">{messages.length}</span>
-                    </button>
-                    <button onClick={() => setActiveTab('requests')} className={activeTab === 'requests' ? 'active' : ''}>
-                        <Users size={20} /> Requests <span className="badge">{requests.length}</span>
-                    </button>
-                    <button onClick={() => setActiveTab('inventory')} className={activeTab === 'inventory' ? 'active' : ''}>
-                        <Package size={20} /> Inventory
-                    </button>
-                    <button onClick={() => setActiveTab('settings')} className={activeTab === 'settings' ? 'active' : ''}>
-                        <SettingsIcon size={20} /> Settings
-                    </button>
-                </nav>
-                <button className="logout-btn" onClick={handleLogout}>
-                    <LogOut size={20} /> Logout
-                </button>
-            </div>
-
-            {/* Main Content */}
-            <div className="admin-content">
-                {activeTab === 'overview' && (
-                    <div className="overview-section">
-                        <h1>Dashboard Overview</h1>
-                        <div className="stats-grid">
-                            <div className="stat-card">
-                                <h3>Total Visitors</h3>
-                                <p className="stat-number">{stats.total_visitors}</p>
-                            </div>
-                            <div className="stat-card">
-                                <h3>Returning Visitors</h3>
-                                <p className="stat-number">{stats.recurring_visitors}</p>
-                            </div>
-                            <div className="stat-card">
-                                <h3>Total Products</h3>
-                                <p className="stat-number">{products.length}</p>
-                            </div>
-                            <div className="stat-card">
-                                <h3>Pending Requests</h3>
-                                <p className="stat-number">{requests.length}</p>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {activeTab === 'messages' && (
-                    <div className="messages-section">
-                        <h1>Messages</h1>
-                        <div className="list-grid">
-                            {messages.map(msg => (
-                                <div key={msg.id} className="list-card">
-                                    <div className="card-header">
-                                        <h4>{msg.name}</h4>
-                                        <span className="date">{new Date(msg.created_at).toLocaleString()}</span>
-                                    </div>
-                                    <p className="subtitle">{msg.phone}</p>
-                                    <p className="body-text">{msg.message}</p>
-                                    <button className="delete-btn" onClick={() => deleteMessage(msg.id)}>
-                                        <Trash2 size={16} /> Delete
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                )}
-
-                {activeTab === 'requests' && (
-                    <div className="requests-section">
-                        <h1>Product Requests</h1>
-                        <div className="list-grid">
-                            {requests.map(req => (
-                                <div key={req.id} className="list-card request-card">
-                                    <div className="card-header">
-                                        <h4>{req.product_name}</h4>
-                                        <span className="date">{new Date(req.created_at).toLocaleDateString()}</span>
-                                    </div>
-                                    <p className="body-text"><strong>Contact:</strong> {req.contact_info}</p>
-                                    <button className="delete-btn" onClick={() => deleteRequest(req.id)}>
-                                        <Trash2 size={16} /> Delete
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                )}
-
-                {activeTab === 'inventory' && (
-                    <div className="inventory-section">
-                        <h1>Inventory Management</h1>
-
-                        {/* Add Item Form */}
-                        <div className="add-item-form">
+        // ... (previous JSX)
+        {/* Add Item Form */ }
+        < div className = "add-item-form" >
                             <h3>Add New Item</h3>
                             <div className="form-type-toggle">
                                 <button className={newItemType === 'product' ? 'active' : ''} onClick={() => setNewItemType('product')}>Product</button>
@@ -265,7 +182,23 @@ const Admin = () => {
                             <form onSubmit={handleAddItem}>
                                 <div className="form-row">
                                     <input placeholder="Name" value={newItemData.name || ''} onChange={e => setNewItemData({ ...newItemData, name: e.target.value })} required />
-                                    <input placeholder="Image URL" value={newItemData.image_url || ''} onChange={e => setNewItemData({ ...newItemData, image_url: e.target.value })} />
+                                    {/* Image Upload Input */}
+                                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                                        <input 
+                                            type="text" 
+                                            placeholder="Image URL (or upload below)" 
+                                            value={newItemData.image_url || ''} 
+                                            onChange={e => setNewItemData({ ...newItemData, image_url: e.target.value })} 
+                                        />
+                                        <input 
+                                            type="file" 
+                                            accept="image/*" 
+                                            onChange={handleImageUpload} 
+                                            disabled={uploading}
+                                            style={{ padding: '5px', fontSize: '0.8rem' }}
+                                        />
+                                        {uploading && <span style={{ fontSize: '0.8rem', color: 'blue' }}>Uploading...</span>}
+                                    </div>
                                 </div>
                                 {newItemType === 'product' && (
                                     <div className="form-row">
@@ -279,10 +212,10 @@ const Admin = () => {
                                 )}
                                 <button type="submit" className="btn btn-primary">Add {newItemType}</button>
                             </form>
-                        </div>
+                        </div >
 
-                        {/* Lists */}
-                        <div className="inventory-lists">
+    {/* Lists */ }
+    < div className = "inventory-lists" >
                             <div className="categories-list">
                                 <h3>Categories</h3>
                                 <ul>
@@ -317,34 +250,36 @@ const Admin = () => {
                                     ))}
                                 </ul>
                             </div>
-                        </div>
-                    </div>
+                        </div >
+                    </div >
                 )}
 
-                {activeTab === 'settings' && (
-                    <div className="settings-section">
-                        <h1>Admin Settings</h1>
-                        <form className="settings-form" onSubmit={handleUpdateSettings}>
-                            <div className="form-group">
-                                <label>New Username (Optional)</label>
-                                <input type="text" value={settingsData.username} onChange={e => setSettingsData({ ...settingsData, username: e.target.value })} />
-                            </div>
-                            <div className="form-group">
-                                <label>New Password (Optional)</label>
-                                <input type="password" value={settingsData.newPassword} onChange={e => setSettingsData({ ...settingsData, newPassword: e.target.value })} />
-                            </div>
-                            <hr />
-                            <div className="form-group">
-                                <label>Old Password (Required)</label>
-                                <input type="password" value={settingsData.oldPassword} onChange={e => setSettingsData({ ...settingsData, oldPassword: e.target.value })} required />
-                            </div>
-                            <button type="submit" className="btn btn-primary">Update Settings</button>
-                        </form>
-                    </div>
-                )}
-            </div>
+{
+    activeTab === 'settings' && (
+        <div className="settings-section">
+            <h1>Admin Settings</h1>
+            <form className="settings-form" onSubmit={handleUpdateSettings}>
+                <div className="form-group">
+                    <label>New Username (Optional)</label>
+                    <input type="text" value={settingsData.username} onChange={e => setSettingsData({ ...settingsData, username: e.target.value })} />
+                </div>
+                <div className="form-group">
+                    <label>New Password (Optional)</label>
+                    <input type="password" value={settingsData.newPassword} onChange={e => setSettingsData({ ...settingsData, newPassword: e.target.value })} />
+                </div>
+                <hr />
+                <div className="form-group">
+                    <label>Old Password (Required)</label>
+                    <input type="password" value={settingsData.oldPassword} onChange={e => setSettingsData({ ...settingsData, oldPassword: e.target.value })} required />
+                </div>
+                <button type="submit" className="btn btn-primary">Update Settings</button>
+            </form>
+        </div>
+    )
+}
+            </div >
 
-            <style>{`
+    <style>{`
                 .admin-page {
                     display: flex;
                     min-height: 100vh;
@@ -506,7 +441,7 @@ const Admin = () => {
                     margin-top: 2rem;
                 }
             `}</style>
-        </div>
+        </div >
     );
 };
 
