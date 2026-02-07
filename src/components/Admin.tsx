@@ -109,6 +109,70 @@ const Admin = () => {
         fetchInventory();
     };
 
+    // ... (previous code)
+
+    // UI States
+    const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
+    const [modal, setModal] = useState<{ isOpen: boolean; message: string; onConfirm: () => void } | null>(null);
+
+    // Helpers
+    const showToast = (message: string, type: 'success' | 'error' | 'info' = 'success') => {
+        setToast({ message, type });
+        setTimeout(() => setToast(null), 3000);
+    };
+
+    const confirmAction = (message: string, action: () => void) => {
+        setModal({ isOpen: true, message, onConfirm: action });
+    };
+
+    const closeModal = () => {
+        setModal(null);
+    };
+
+    // --- Actions ---
+
+    const deleteMessage = async (id: number) => {
+        confirmAction('Are you sure you want to delete this message?', async () => {
+            await supabase.from('messages').delete().eq('id', id);
+            fetchMessages();
+            showToast('Message deleted successfully');
+            closeModal();
+        });
+    };
+
+    const deleteRequest = async (id: number) => {
+        confirmAction('Are you sure you want to delete this request?', async () => {
+            await supabase.from('requests').delete().eq('id', id);
+            fetchRequests();
+            showToast('Request deleted successfully');
+            closeModal();
+        });
+    };
+
+    const deleteProduct = async (id: number) => {
+        confirmAction('Are you sure you want to delete this product?', async () => {
+            await supabase.from('products').delete().eq('id', id);
+            fetchInventory();
+            showToast('Product deleted successfully');
+            closeModal();
+        });
+    };
+
+    const deleteCategory = async (id: number) => {
+        confirmAction('Delete category? WARNING: This might delete associated products.', async () => {
+            await supabase.from('categories').delete().eq('id', id);
+            fetchInventory();
+            showToast('Category deleted successfully');
+            closeModal();
+        });
+    };
+
+    const toggleStock = async (id: number, currentStatus: boolean) => {
+        await supabase.from('products').update({ in_stock: !currentStatus }).eq('id', id);
+        fetchInventory();
+        showToast(`Product marked as ${!currentStatus ? 'In Stock' : 'Out of Stock'}`);
+    };
+
     // Image Upload State
     const [uploading, setUploading] = useState(false);
 
@@ -136,8 +200,9 @@ const Admin = () => {
             const { data } = supabase.storage.from('product-images').getPublicUrl(filePath);
 
             setNewItemData({ ...newItemData, image_url: data.publicUrl });
+            showToast('Image uploaded successfully');
         } catch (error) {
-            alert('Error uploading image!');
+            showToast('Error uploading image!', 'error');
             console.error(error);
         } finally {
             setUploading(false);
@@ -159,16 +224,36 @@ const Admin = () => {
                     in_stock: true
                 }]);
             }
-            alert('Item added successfully!');
+            showToast('Item added successfully!');
             setNewItemData({});
             fetchInventory();
         } catch (error) {
             console.error(error);
-            alert('Error adding item');
+            showToast('Error adding item', 'error');
         }
     };
 
-    // ... (rest of the component)
+    const handleUpdateSettings = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            // Verify old password
+            const { data: admin } = await supabase.from('admin_settings').select('*').single();
+            if (admin && admin.password === settingsData.oldPassword) {
+                await supabase.from('admin_settings').update({
+                    username: settingsData.username || admin.username,
+                    password: settingsData.newPassword || admin.password
+                }).eq('id', 1);
+                showToast('Settings updated successfully!');
+                setSettingsData({ username: '', oldPassword: '', newPassword: '' });
+            } else {
+                showToast('Incorrect old password', 'error');
+            }
+        } catch (error) {
+            showToast('Error updating settings', 'error');
+        }
+    };
+
+    if (loading) return <div className="p-8 text-center">Loading Admin Dashboard...</div>;
 
     return (
         <div className="admin-page">
@@ -375,6 +460,27 @@ const Admin = () => {
                 )}
             </div>
 
+            {/* Notification Toast */}
+            {toast && (
+                <div className={`toast toast-${toast.type}`}>
+                    {toast.message}
+                </div>
+            )}
+
+            {/* Confirmation Modal */}
+            {modal && modal.isOpen && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <h3>Confirm Action</h3>
+                        <p>{modal.message}</p>
+                        <div className="modal-actions">
+                            <button className="btn btn-outline" onClick={closeModal}>Cancel</button>
+                            <button className="btn btn-primary" onClick={modal.onConfirm}>Confirm</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <style>{`
                 .admin-page {
                     display: flex;
@@ -389,6 +495,7 @@ const Admin = () => {
                     flex-direction: column;
                     position: fixed;
                     height: 100vh;
+                    z-index: 100;
                 }
                 .sidebar-header { padding: 2rem; border-bottom: 1px solid #333; }
                 .sidebar-nav { flex: 1; padding: 1rem; }
@@ -536,6 +643,61 @@ const Admin = () => {
                     max-width: 500px;
                     margin-top: 2rem;
                 }
+
+                /* Toast Notification */
+                .toast {
+                    position: fixed;
+                    bottom: 2rem;
+                    right: 2rem;
+                    padding: 1rem 2rem;
+                    border-radius: 8px;
+                    color: white;
+                    font-weight: 500;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                    animation: slideIn 0.3s ease-out;
+                    z-index: 1000;
+                }
+                .toast-success { background-color: #00b894; }
+                .toast-error { background-color: #ff4757; }
+                .toast-info { background-color: #0984e3; }
+
+                @keyframes slideIn {
+                    from { transform: translateY(100%); opacity: 0; }
+                    to { transform: translateY(0); opacity: 1; }
+                }
+
+                /* Confirmation Modal */
+                .modal-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0,0,0,0.5);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 2000;
+                    backdrop-filter: blur(2px);
+                }
+                .modal-content {
+                    background: white;
+                    padding: 2.5rem;
+                    border-radius: 12px;
+                    width: 100%;
+                    max-width: 400px;
+                    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+                    text-align: center;
+                    animation: scaleIn 0.2s ease-out;
+                }
+                @keyframes scaleIn {
+                    from { transform: scale(0.9); opacity: 0; }
+                    to { transform: scale(1); opacity: 1; }
+                }
+                .modal-content h3 { margin-bottom: 1rem; color: #1a1a1a; }
+                .modal-content p { color: #666; margin-bottom: 2rem; }
+                .modal-actions { display: flex; gap: 1rem; justify-content: center; }
+                .modal-actions button { padding: 8px 24px; }
             `}</style>
         </div>
     );
