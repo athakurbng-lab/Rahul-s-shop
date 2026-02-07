@@ -80,34 +80,7 @@ const Admin = () => {
 
     // --- Actions ---
 
-    const deleteMessage = async (id: number) => {
-        if (!confirm('Delete message?')) return;
-        await supabase.from('messages').delete().eq('id', id);
-        fetchMessages();
-    };
 
-    const deleteRequest = async (id: number) => {
-        if (!confirm('Delete request?')) return;
-        await supabase.from('requests').delete().eq('id', id);
-        fetchRequests();
-    };
-
-    const deleteProduct = async (id: number) => {
-        if (!confirm('Delete product?')) return;
-        await supabase.from('products').delete().eq('id', id);
-        fetchInventory();
-    };
-
-    const deleteCategory = async (id: number) => {
-        if (!confirm('Delete category? WARNING: This might delete associated products.')) return;
-        await supabase.from('categories').delete().eq('id', id);
-        fetchInventory();
-    };
-
-    const toggleStock = async (id: number, currentStatus: boolean) => {
-        await supabase.from('products').update({ in_stock: !currentStatus }).eq('id', id);
-        fetchInventory();
-    };
 
     // ... (previous code)
 
