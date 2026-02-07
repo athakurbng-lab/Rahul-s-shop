@@ -89,13 +89,14 @@ const Hero = () => {
           font-size: 0.8rem;
           font-weight: 600;
           letter-spacing: 1px;
-          margin-bottom: 1.5rem;
+          margin-bottom: 4rem;
           text-transform: uppercase;
         }
 
         .hero-title {
           font-size: 4rem;
           font-weight: 700;
+          margin-top: 2rem;
           margin-bottom: 1.5rem;
           color: var(--primary-color);
           line-height: 1.1;
