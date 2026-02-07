@@ -7,7 +7,7 @@ const Footer = () => {
             <div className="container">
                 <div className="footer-content">
                     <div className="footer-brand">
-                        <h3>Sarswati Store</h3>
+                        <h3>Saraswati Store</h3>
                         <p>Serving the community of Pachrukhi, Siwan, Bihar with quality stationery, books, and sports equipment since 1990.</p>
                     </div>
 
@@ -40,7 +40,7 @@ const Footer = () => {
                 </div>
 
                 <div className="footer-bottom">
-                    <p>&copy; {new Date().getFullYear()} Sarswati Store and Sports Bhandar. All rights reserved.</p>
+                    <p>&copy; {new Date().getFullYear()} Saraswati Store and Sports Bhandar. All rights reserved.</p>
                 </div>
             </div>
 

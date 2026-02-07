@@ -23,7 +23,7 @@ const Navbar = () => {
             <BookOpen size={24} color="#fff" />
           </div>
           <div className="logo-text">
-            <span className="brand-name">Sarswati Store</span>
+            <span className="brand-name">Saraswati Store</span>
             <span className="brand-tagline">Since 1990</span>
           </div>
         </a>
