@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Phone, MapPin, Clock, Send } from 'lucide-react';
+import { Phone, MapPin, Clock } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 const Contact = () => {

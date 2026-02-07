@@ -1,61 +1,60 @@
-import React from 'react';
 import { Store, Heart, UserCheck, BookOpen } from 'lucide-react';
 
 const features = [
-    {
-        icon: <Store size={24} />,
-        title: 'Trusted Since 1990',
-        description: 'Over 35 years of serving the community with dedication and integrity'
-    },
-    {
-        icon: <Heart size={24} />,
-        title: 'Quality Products',
-        description: 'We stock only genuine, high-quality stationery, books, and sports equipment'
-    },
-    {
-        icon: <UserCheck size={24} />,
-        title: 'Customer First',
-        description: 'Personalized service and expert guidance for all your educational needs'
-    },
-    {
-        icon: <BookOpen size={24} />,
-        title: 'Wide Selection',
-        description: 'Comprehensive range from basic stationery to specialized competitive exam books'
-    }
+  {
+    icon: <Store size={24} />,
+    title: 'Trusted Since 1990',
+    description: 'Over 35 years of serving the community with dedication and integrity'
+  },
+  {
+    icon: <Heart size={24} />,
+    title: 'Quality Products',
+    description: 'We stock only genuine, high-quality stationery, books, and sports equipment'
+  },
+  {
+    icon: <UserCheck size={24} />,
+    title: 'Customer First',
+    description: 'Personalized service and expert guidance for all your educational needs'
+  },
+  {
+    icon: <BookOpen size={24} />,
+    title: 'Wide Selection',
+    description: 'Comprehensive range from basic stationery to specialized competitive exam books'
+  }
 ];
 
 const About = () => {
-    return (
-        <section id="about" className="section bg-light">
-            <div className="container">
-                {/* Mission Statement */}
-                <div className="mission-container text-center mb-16">
-                    <h2 className="section-title">Our Mission</h2>
-                    <p className="mission-text">
-                        To empower students and sports enthusiasts by providing easy access to quality educational
-                        materials and sports equipment at affordable prices. We believe in nurturing talent, supporting
-                        dreams, and building a stronger, more educated community.
-                    </p>
-                </div>
+  return (
+    <section id="about" className="section bg-light">
+      <div className="container">
+        {/* Mission Statement */}
+        <div className="mission-container text-center mb-16">
+          <h2 className="section-title">Our Mission</h2>
+          <p className="mission-text">
+            To empower students and sports enthusiasts by providing easy access to quality educational
+            materials and sports equipment at affordable prices. We believe in nurturing talent, supporting
+            dreams, and building a stronger, more educated community.
+          </p>
+        </div>
 
-                {/* Why Choose Us */}
-                <div className="why-choose-us">
-                    <h2 className="section-title text-center mb-12">Why Choose Us</h2>
-                    <div className="features-grid">
-                        {features.map((feature, index) => (
-                            <div key={index} className="feature-card">
-                                <div className="feature-icon">
-                                    {feature.icon}
-                                </div>
-                                <h3>{feature.title}</h3>
-                                <p>{feature.description}</p>
-                            </div>
-                        ))}
-                    </div>
+        {/* Why Choose Us */}
+        <div className="why-choose-us">
+          <h2 className="section-title text-center mb-12">Why Choose Us</h2>
+          <div className="features-grid">
+            {features.map((feature, index) => (
+              <div key={index} className="feature-card">
+                <div className="feature-icon">
+                  {feature.icon}
                 </div>
-            </div>
+                <h3>{feature.title}</h3>
+                <p>{feature.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
 
-            <style>{`
+      <style>{`
         .bg-light {
           background-color: var(--secondary-color);
         }
@@ -115,8 +114,8 @@ const About = () => {
           color: #666;
         }
       `}</style>
-        </section>
-    );
+    </section>
+  );
 };
 
 export default About;

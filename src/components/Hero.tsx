@@ -1,44 +1,43 @@
-import React from 'react';
 import { Phone, MessageCircle, MapPin } from 'lucide-react';
 
 // Using a placeholder image that matches the "library/store" vibe
 const HERO_IMAGE = "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&q=80&w=2070";
 
 const Hero = () => {
-    return (
-        <section id="home" className="hero">
-            <div className="hero-background">
-                <div className="overlay"></div>
-            </div>
+  return (
+    <section id="home" className="hero">
+      <div className="hero-background">
+        <div className="overlay"></div>
+      </div>
 
-            <div className="container hero-content">
-                <div className="badge">TRUSTED SINCE 1990</div>
-                <h1 className="hero-title">
-                    Fueling Education <br />
-                    <span className="serif-italic">& Sports Since 1990</span>
-                </h1>
-                <p className="hero-subtitle">
-                    Your trusted local destination for complete stationery, educational
-                    books, and sports equipment in Pachrukhi, Siwan, Bihar.
-                </p>
+      <div className="container hero-content">
+        <div className="badge">TRUSTED SINCE 1990</div>
+        <h1 className="hero-title">
+          Fueling Education <br />
+          <span className="serif-italic">& Sports Since 1990</span>
+        </h1>
+        <p className="hero-subtitle">
+          Your trusted local destination for complete stationery, educational
+          books, and sports equipment in Pachrukhi, Siwan, Bihar.
+        </p>
 
-                <div className="hero-actions">
-                    <a href="tel:07091791893" className="btn btn-primary">
-                        <Phone size={18} style={{ marginRight: '8px' }} />
-                        Call Now
-                    </a>
-                    <a href="https://wa.me/919973403351" className="btn btn-light">
-                        <MessageCircle size={18} style={{ marginRight: '8px' }} />
-                        WhatsApp Chat
-                    </a>
-                    <a href="#contact" className="btn btn-outline-dark">
-                        <MapPin size={18} style={{ marginRight: '8px' }} />
-                        Visit Store
-                    </a>
-                </div>
-            </div>
+        <div className="hero-actions">
+          <a href="tel:07091791893" className="btn btn-primary">
+            <Phone size={18} style={{ marginRight: '8px' }} />
+            Call Now
+          </a>
+          <a href="https://wa.me/919973403351" className="btn btn-light">
+            <MessageCircle size={18} style={{ marginRight: '8px' }} />
+            WhatsApp Chat
+          </a>
+          <a href="#contact" className="btn btn-outline-dark">
+            <MapPin size={18} style={{ marginRight: '8px' }} />
+            Visit Store
+          </a>
+        </div>
+      </div>
 
-            <style>{`
+      <style>{`
         .hero {
           position: relative;
           height: 100vh;
@@ -157,8 +156,8 @@ const Hero = () => {
           }
         }
       `}</style>
-        </section>
-    );
+    </section>
+  );
 };
 
 export default Hero;

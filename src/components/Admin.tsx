@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
-import { Trash2, Plus, Edit2, LogOut, Package, MessageSquare, Users, Settings as SettingsIcon, LayoutGrid } from 'lucide-react';
+import { Trash2, Edit2, LogOut, Package, MessageSquare, Users, Settings as SettingsIcon, LayoutGrid } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 // Types
