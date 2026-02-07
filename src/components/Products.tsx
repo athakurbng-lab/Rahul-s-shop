@@ -275,20 +275,20 @@ const Products = () => {
 
         .price-container {
             display: flex;
-            align-items: center;
+            align-items: baseline;
             gap: 8px;
         }
 
         .original-price {
             text-decoration: line-through;
-            color: #999;
-            font-size: 0.9rem;
+            color: #767676;
+            font-size: 0.85rem;
         }
 
         .price {
-          font-weight: 700;
-          color: var(--primary-color);
-          font-size: 1.1rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #B12704; /* Amazon deal price color often red-ish */
         }
 
         .btn-icon {
