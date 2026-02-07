@@ -14,6 +14,7 @@ interface Product {
   category_id: number;
   image_url: string;
   price: number;
+  discount: number;
   in_stock: boolean;
 }
 
@@ -101,26 +102,43 @@ const Products = () => {
 
         {/* Products Grid */}
         <div className="products-grid">
-          {filteredProducts.map((product) => (
-            <div key={product.id} className="product-card">
-              <div className="product-image" style={{ backgroundImage: `url(${product.image_url})` }}>
-                {!product.in_stock && (
-                  <div className="out-of-stock-badge">
-                    Out of Stock
+          {filteredProducts.map((product) => {
+            const hasDiscount = product.discount > 0;
+            const effectivePrice = hasDiscount
+              ? Math.round(product.price - (product.price * product.discount / 100))
+              : product.price;
+
+            return (
+              <div key={product.id} className="product-card">
+                <div className="product-image" style={{ backgroundImage: `url(${product.image_url})` }}>
+                  {!product.in_stock && (
+                    <div className="badge out-of-stock-badge">
+                      Out of Stock
+                    </div>
+                  )}
+                  {product.in_stock && hasDiscount && (
+                    <div className="badge discount-badge">
+                      {product.discount}% OFF
+                    </div>
+                  )}
+                </div>
+                <div className="product-info">
+                  <h3>{product.name}</h3>
+                  <div className="product-meta">
+                    <div className="price-container">
+                      {hasDiscount && (
+                        <span className="original-price">₹{product.price}</span>
+                      )}
+                      <span className="price">₹{effectivePrice}</span>
+                    </div>
+                    <button className="btn-icon" title="Enquire">
+                      <ShoppingBag size={20} />
+                    </button>
                   </div>
-                )}
-              </div>
-              <div className="product-info">
-                <h3>{product.name}</h3>
-                <div className="product-meta">
-                  <span className="price">₹{product.price}</span>
-                  <button className="btn-icon" title="Enquire">
-                    <ShoppingBag size={20} />
-                  </button>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {filteredProducts.length === 0 && (
@@ -218,16 +236,25 @@ const Products = () => {
           position: relative;
         }
 
-        .out-of-stock-badge {
+        .badge {
           position: absolute;
-          top: 10px;
-          right: 10px;
-          background: rgba(0,0,0,0.7);
-          color: white;
           padding: 4px 12px;
           border-radius: 4px;
           font-size: 0.8rem;
           font-weight: 600;
+          color: white;
+        }
+
+        .out-of-stock-badge {
+          top: 10px;
+          right: 10px;
+          background: rgba(0,0,0,0.7);
+        }
+
+        .discount-badge {
+          top: 10px;
+          left: 10px;
+          background: #e63946; /* Accent color for discount */
         }
 
         .product-info {
@@ -244,6 +271,18 @@ const Products = () => {
           display: flex;
           justify-content: space-between;
           align-items: center;
+        }
+
+        .price-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .original-price {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 0.9rem;
         }
 
         .price {

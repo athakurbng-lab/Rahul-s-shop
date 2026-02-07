@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 interface Message { id: number; created_at: string; name: string; phone: string; message: string; }
 interface Request { id: number; created_at: string; product_name: string; contact_info: string; }
 interface Category { id: number; name: string; image_url: string; }
-interface Product { id: number; name: string; category_id: number; image_url: string; price: number; in_stock: boolean; }
+interface Product { id: number; name: string; category_id: number; image_url: string; price: number; discount: number; in_stock: boolean; }
 interface Stats { total_visitors: number; recurring_visitors: number; }
 
 const Admin = () => {
@@ -120,6 +120,7 @@ const Admin = () => {
                     category_id: newItemData.category_id,
                     image_url: newItemData.image_url,
                     price: newItemData.price,
+                    discount: newItemData.discount || 0,
                     in_stock: true
                 }]);
             }
@@ -272,7 +273,8 @@ const Admin = () => {
                                             <option value="">Select Category</option>
                                             {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                                         </select>
-                                        <input type="number" placeholder="Price" value={newItemData.price || ''} onChange={e => setNewItemData({ ...newItemData, price: e.target.value })} required />
+                                        <input type="number" placeholder="Price (₹)" value={newItemData.price || ''} onChange={e => setNewItemData({ ...newItemData, price: e.target.value })} required />
+                                        <input type="number" placeholder="Discount (%)" value={newItemData.discount || ''} onChange={e => setNewItemData({ ...newItemData, discount: e.target.value })} />
                                     </div>
                                 )}
                                 <button type="submit" className="btn btn-primary">Add {newItemType}</button>
@@ -299,7 +301,12 @@ const Admin = () => {
                                         <li key={p.id}>
                                             <div className="prod-info">
                                                 <img src={p.image_url} alt="" className="tiny-thumb" />
-                                                <span>{p.name}</span>
+                                                <div>
+                                                    <span style={{ display: 'block', fontWeight: 500 }}>{p.name}</span>
+                                                    <span style={{ fontSize: '0.8rem', color: '#666' }}>
+                                                        ₹{p.price} {p.discount > 0 ? `(-${p.discount}%)` : ''}
+                                                    </span>
+                                                </div>
                                             </div>
                                             <div className="prod-actions">
                                                 <span className={`status ${p.in_stock ? 'in' : 'out'}`}>{p.in_stock ? 'In Stock' : 'Out Stock'}</span>
