@@ -1,22 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
-import { ShoppingBag, AlertCircle, Plus } from 'lucide-react';
-
-interface Category {
-  id: number;
-  name: string;
-  image_url: string;
-}
-
-interface Product {
-  id: number;
-  name: string;
-  category_id: number;
-  image_url: string;
-  price: number;
-  discount: number;
-  in_stock: boolean;
-}
+import { ShoppingBag, AlertCircle, Plus, Check } from 'lucide-react';
+import { Category, Product } from '../types';
+import { useCart } from '../context/CartContext';
 
 const Products = () => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -25,6 +11,7 @@ const Products = () => {
   const [showRequestModal, setShowRequestModal] = useState(false);
   const [requestData, setRequestData] = useState({ productName: '', contactInfo: '' });
   const [submittingRequest, setSubmittingRequest] = useState(false);
+  const { cartItems, toggleCartItem } = useCart();
 
   useEffect(() => {
     fetchData();
@@ -108,6 +95,8 @@ const Products = () => {
               ? Math.round(product.price - (product.price * product.discount / 100))
               : product.price;
 
+            const isInCart = cartItems.some(item => item.id === product.id);
+
             return (
               <div key={product.id} className="product-card">
                 <div className="product-image" style={{ backgroundImage: `url(${product.image_url})` }}>
@@ -131,9 +120,15 @@ const Products = () => {
                       )}
                       <span className="price">₹{effectivePrice}</span>
                     </div>
-                    <button className="btn-icon" title="Enquire">
-                      <ShoppingBag size={20} />
-                    </button>
+                    {product.in_stock && (
+                      <button
+                        className={`btn-icon ${isInCart ? 'active' : ''}`}
+                        title={isInCart ? "Remove from cart" : "Add to cart"}
+                        onClick={() => toggleCartItem(product)}
+                      >
+                        {isInCart ? <Check size={20} /> : <ShoppingBag size={20} />}
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -300,9 +295,16 @@ const Products = () => {
           align-items: center;
           justify-content: center;
           transition: background 0.2s;
+          border: none;
+          cursor: pointer;
         }
 
         .btn-icon:hover {
+          background: var(--primary-color);
+          color: white;
+        }
+        
+        .btn-icon.active {
           background: var(--primary-color);
           color: white;
         }

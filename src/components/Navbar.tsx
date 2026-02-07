@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { BookOpen, Menu, X } from 'lucide-react';
+import { BookOpen, Menu, X, ShoppingBag } from 'lucide-react';
+import { useCart } from '../context/CartContext';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { setIsCartOpen, cartItems } = useCart();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -32,12 +34,24 @@ const Navbar = () => {
           <li><a href="#about">About</a></li>
           <li><a href="#products">Products</a></li>
           <li><a href="#contact">Contact</a></li>
+          <li>
+            <button className="cart-btn" onClick={() => setIsCartOpen(true)}>
+              <ShoppingBag size={20} />
+              {cartItems.length > 0 && <span className="cart-badge">{cartItems.length}</span>}
+            </button>
+          </li>
         </ul>
 
-        {/* Mobile Menu Button */}
-        <button className="mobile-toggle" onClick={() => setIsOpen(!isOpen)}>
-          {isOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        <div className="mobile-actions">
+          <button className="cart-btn mobile-cart-btn" onClick={() => setIsCartOpen(true)}>
+            <ShoppingBag size={20} />
+            {cartItems.length > 0 && <span className="cart-badge">{cartItems.length}</span>}
+          </button>
+          {/* Mobile Menu Button */}
+          <button className="mobile-toggle" onClick={() => setIsOpen(!isOpen)}>
+            {isOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
 
         {/* Mobile Menu */}
         <div className={`mobile-menu ${isOpen ? 'open' : ''}`}>
@@ -114,6 +128,7 @@ const Navbar = () => {
         .nav-links {
           display: flex;
           gap: 2rem;
+          align-items: center;
         }
 
         .nav-links a {
@@ -136,6 +151,43 @@ const Navbar = () => {
         .nav-links a:hover::after {
           width: 100%;
         }
+        
+        .cart-btn {
+          background: none;
+          border: none;
+          cursor: pointer;
+          position: relative;
+          color: var(--text-color);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        
+        .cart-badge {
+          position: absolute;
+          top: -8px;
+          right: -8px;
+          background: #ff4757;
+          color: white;
+          font-size: 0.7rem;
+          width: 18px;
+          height: 18px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+        }
+
+        .mobile-actions {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+        }
+
+        .mobile-cart-btn {
+          display: none;
+        }
 
         .mobile-toggle {
           display: none;
@@ -150,8 +202,12 @@ const Navbar = () => {
             display: none;
           }
 
+          .mobile-cart-btn {
+            display: flex;
+          }
+
           .mobile-toggle {
-            display: block;
+            display: block;   
             z-index: 1001;
           }
 
