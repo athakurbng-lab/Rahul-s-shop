@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Phone, MapPin, Clock, Send } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 const Contact = () => {
     const [formData, setFormData] = useState({
@@ -7,11 +8,33 @@ const Contact = () => {
         phone: '',
         message: ''
     });
+    const [loading, setLoading] = useState(false);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        alert('Thank you for your message! We will get back to you soon.');
-        setFormData({ name: '', phone: '', message: '' });
+        setLoading(true);
+
+        try {
+            const { error } = await supabase
+                .from('messages')
+                .insert([
+                    {
+                        name: formData.name,
+                        phone: formData.phone,
+                        message: formData.message
+                    }
+                ]);
+
+            if (error) throw error;
+
+            alert('Thank you for your message! We will get back to you soon.');
+            setFormData({ name: '', phone: '', message: '' });
+        } catch (error) {
+            console.error('Error submitting message:', error);
+            alert('Something went wrong. Please try again or call us directly.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -67,6 +90,7 @@ const Contact = () => {
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                     required
+                                    disabled={loading}
                                 />
                             </div>
                             <div className="form-group">
@@ -77,6 +101,7 @@ const Contact = () => {
                                     value={formData.phone}
                                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                                     required
+                                    disabled={loading}
                                 />
                             </div>
                             <div className="form-group">
@@ -87,10 +112,11 @@ const Contact = () => {
                                     value={formData.message}
                                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                                     required
+                                    disabled={loading}
                                 ></textarea>
                             </div>
-                            <button type="submit" className="btn btn-primary w-full">
-                                Send Message
+                            <button type="submit" className="btn btn-primary w-full" disabled={loading}>
+                                {loading ? 'Sending...' : 'Send Message'}
                             </button>
                         </form>
                     </div>
