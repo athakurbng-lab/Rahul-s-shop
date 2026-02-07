@@ -171,9 +171,107 @@ const Admin = () => {
     // ... (rest of the component)
 
     return (
-        // ... (previous JSX)
-        {/* Add Item Form */ }
-        < div className = "add-item-form" >
+        <div className="admin-page">
+            {/* Sidebar */}
+            <div className="admin-sidebar">
+                <div className="sidebar-header">
+                    <h3>Admin Panel</h3>
+                </div>
+                <nav className="sidebar-nav">
+                    <button onClick={() => setActiveTab('overview')} className={activeTab === 'overview' ? 'active' : ''}>
+                        <LayoutGrid size={20} /> Overview
+                    </button>
+                    <button onClick={() => setActiveTab('messages')} className={activeTab === 'messages' ? 'active' : ''}>
+                        <MessageSquare size={20} /> Messages <span className="badge">{messages.length}</span>
+                    </button>
+                    <button onClick={() => setActiveTab('requests')} className={activeTab === 'requests' ? 'active' : ''}>
+                        <Users size={20} /> Requests <span className="badge">{requests.length}</span>
+                    </button>
+                    <button onClick={() => setActiveTab('inventory')} className={activeTab === 'inventory' ? 'active' : ''}>
+                        <Package size={20} /> Inventory
+                    </button>
+                    <button onClick={() => setActiveTab('settings')} className={activeTab === 'settings' ? 'active' : ''}>
+                        <SettingsIcon size={20} /> Settings
+                    </button>
+                </nav>
+                <button className="logout-btn" onClick={handleLogout}>
+                    <LogOut size={20} /> Logout
+                </button>
+            </div>
+
+            {/* Main Content */}
+            <div className="admin-content">
+                {activeTab === 'overview' && (
+                    <div className="overview-section">
+                        <h1>Dashboard Overview</h1>
+                        <div className="stats-grid">
+                            <div className="stat-card">
+                                <h3>Total Visitors</h3>
+                                <p className="stat-number">{stats.total_visitors}</p>
+                            </div>
+                            <div className="stat-card">
+                                <h3>Returning Visitors</h3>
+                                <p className="stat-number">{stats.recurring_visitors}</p>
+                            </div>
+                            <div className="stat-card">
+                                <h3>Total Products</h3>
+                                <p className="stat-number">{products.length}</p>
+                            </div>
+                            <div className="stat-card">
+                                <h3>Pending Requests</h3>
+                                <p className="stat-number">{requests.length}</p>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {activeTab === 'messages' && (
+                    <div className="messages-section">
+                        <h1>Messages</h1>
+                        <div className="list-grid">
+                            {messages.map(msg => (
+                                <div key={msg.id} className="list-card">
+                                    <div className="card-header">
+                                        <h4>{msg.name}</h4>
+                                        <span className="date">{new Date(msg.created_at).toLocaleString()}</span>
+                                    </div>
+                                    <p className="subtitle">{msg.phone}</p>
+                                    <p className="body-text">{msg.message}</p>
+                                    <button className="delete-btn" onClick={() => deleteMessage(msg.id)}>
+                                        <Trash2 size={16} /> Delete
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {activeTab === 'requests' && (
+                    <div className="requests-section">
+                        <h1>Product Requests</h1>
+                        <div className="list-grid">
+                            {requests.map(req => (
+                                <div key={req.id} className="list-card request-card">
+                                    <div className="card-header">
+                                        <h4>{req.product_name}</h4>
+                                        <span className="date">{new Date(req.created_at).toLocaleDateString()}</span>
+                                    </div>
+                                    <p className="body-text"><strong>Contact:</strong> {req.contact_info}</p>
+                                    <button className="delete-btn" onClick={() => deleteRequest(req.id)}>
+                                        <Trash2 size={16} /> Delete
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {activeTab === 'inventory' && (
+                    <div className="inventory-section">
+                        <h1>Inventory Management</h1>
+
+                        {/* Add Item Form */}
+                        <div className="add-item-form">
                             <h3>Add New Item</h3>
                             <div className="form-type-toggle">
                                 <button className={newItemType === 'product' ? 'active' : ''} onClick={() => setNewItemType('product')}>Product</button>
@@ -184,16 +282,16 @@ const Admin = () => {
                                     <input placeholder="Name" value={newItemData.name || ''} onChange={e => setNewItemData({ ...newItemData, name: e.target.value })} required />
                                     {/* Image Upload Input */}
                                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                                        <input 
-                                            type="text" 
-                                            placeholder="Image URL (or upload below)" 
-                                            value={newItemData.image_url || ''} 
-                                            onChange={e => setNewItemData({ ...newItemData, image_url: e.target.value })} 
+                                        <input
+                                            type="text"
+                                            placeholder="Image URL (or upload below)"
+                                            value={newItemData.image_url || ''}
+                                            onChange={e => setNewItemData({ ...newItemData, image_url: e.target.value })}
                                         />
-                                        <input 
-                                            type="file" 
-                                            accept="image/*" 
-                                            onChange={handleImageUpload} 
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleImageUpload}
                                             disabled={uploading}
                                             style={{ padding: '5px', fontSize: '0.8rem' }}
                                         />
@@ -212,10 +310,10 @@ const Admin = () => {
                                 )}
                                 <button type="submit" className="btn btn-primary">Add {newItemType}</button>
                             </form>
-                        </div >
+                        </div>
 
-    {/* Lists */ }
-    < div className = "inventory-lists" >
+                        {/* Lists */}
+                        <div className="inventory-lists">
                             <div className="categories-list">
                                 <h3>Categories</h3>
                                 <ul>
@@ -250,36 +348,34 @@ const Admin = () => {
                                     ))}
                                 </ul>
                             </div>
-                        </div >
-                    </div >
+                        </div>
+                    </div>
                 )}
 
-{
-    activeTab === 'settings' && (
-        <div className="settings-section">
-            <h1>Admin Settings</h1>
-            <form className="settings-form" onSubmit={handleUpdateSettings}>
-                <div className="form-group">
-                    <label>New Username (Optional)</label>
-                    <input type="text" value={settingsData.username} onChange={e => setSettingsData({ ...settingsData, username: e.target.value })} />
-                </div>
-                <div className="form-group">
-                    <label>New Password (Optional)</label>
-                    <input type="password" value={settingsData.newPassword} onChange={e => setSettingsData({ ...settingsData, newPassword: e.target.value })} />
-                </div>
-                <hr />
-                <div className="form-group">
-                    <label>Old Password (Required)</label>
-                    <input type="password" value={settingsData.oldPassword} onChange={e => setSettingsData({ ...settingsData, oldPassword: e.target.value })} required />
-                </div>
-                <button type="submit" className="btn btn-primary">Update Settings</button>
-            </form>
-        </div>
-    )
-}
-            </div >
+                {activeTab === 'settings' && (
+                    <div className="settings-section">
+                        <h1>Admin Settings</h1>
+                        <form className="settings-form" onSubmit={handleUpdateSettings}>
+                            <div className="form-group">
+                                <label>New Username (Optional)</label>
+                                <input type="text" value={settingsData.username} onChange={e => setSettingsData({ ...settingsData, username: e.target.value })} />
+                            </div>
+                            <div className="form-group">
+                                <label>New Password (Optional)</label>
+                                <input type="password" value={settingsData.newPassword} onChange={e => setSettingsData({ ...settingsData, newPassword: e.target.value })} />
+                            </div>
+                            <hr />
+                            <div className="form-group">
+                                <label>Old Password (Required)</label>
+                                <input type="password" value={settingsData.oldPassword} onChange={e => setSettingsData({ ...settingsData, oldPassword: e.target.value })} required />
+                            </div>
+                            <button type="submit" className="btn btn-primary">Update Settings</button>
+                        </form>
+                    </div>
+                )}
+            </div>
 
-    <style>{`
+            <style>{`
                 .admin-page {
                     display: flex;
                     min-height: 100vh;
@@ -400,7 +496,7 @@ const Admin = () => {
                     color: white;
                     border-color: var(--primary-color);
                 }
-                .form-row { display: flex; gap: 1rem; margin-bottom: 1rem; }
+                .form-row { display: flex; gap: 1rem; margin-bottom: 1.0rem; }
                 .form-row input, .form-row select {
                     flex: 1;
                     padding: 10px;
@@ -441,7 +537,7 @@ const Admin = () => {
                     margin-top: 2rem;
                 }
             `}</style>
-        </div >
+        </div>
     );
 };
 
