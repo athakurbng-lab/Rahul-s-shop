@@ -4,14 +4,15 @@
   --accent-color: #e63946;
   --text-color: #333333;
   --bg-color: #ffffff;
-  --font-heading: 'Times New Roman', serif; /* Trying to match the elegant serif in screenshots */
+  --font-heading: 'Times New Roman', serif;
+  /* Trying to match the elegant serif in screenshots */
   --font-body: 'Inter', sans-serif;
-  
+
   --spacing-sm: 8px;
   --spacing-md: 16px;
   --spacing-lg: 32px;
   --spacing-xl: 64px;
-  
+
   --container-width: 1200px;
 }
 
@@ -28,7 +29,12 @@ body {
   line-height: 1.6;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-heading);
   color: var(--primary-color);
   line-height: 1.2;
@@ -96,12 +102,50 @@ img {
 }
 
 /* Utility classes */
-.text-center { text-align: center; }
-.flex { display: flex; }
-.items-center { align-items: center; }
-.justify-between { justify-content: space-between; }
-.justify-center { justify-content: center; }
-.gap-4 { gap: 1rem; }
-.gap-8 { gap: 2rem; }
-.grid { display: grid; }
-.w-full { width: 100%; }
+.text-center {
+  text-align: center;
+}
+
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.gap-4 {
+  gap: 1rem;
+}
+
+.gap-8 {
+  gap: 2rem;
+}
+
+.grid {
+  display: grid;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.mb-16 {
+  margin-bottom: 4rem;
+}
+
+.mt-16 {
+  margin-top: 4rem;
+}
+
+.mt-4 {
+  margin-top: 1rem;
+}

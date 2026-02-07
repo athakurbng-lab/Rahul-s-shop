@@ -43,7 +43,8 @@ const Products = () => {
       setShowRequestModal(false);
       setRequestData({ productName: '', contactInfo: '' });
     } catch (error) {
-      alert('Error submitting request');
+      console.error('Error submitting request:', error);
+      alert((error as any).message || 'Error submitting request');
     } finally {
       setSubmittingRequest(false);
     }

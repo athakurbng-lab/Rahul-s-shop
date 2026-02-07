@@ -41,9 +41,9 @@ const Contact = () => {
 
             alert('Thank you for your message! We will get back to you soon.');
             setFormData({ name: '', phone: '', message: '' });
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error submitting message:', error);
-            alert('Something went wrong. Please try again or call us directly.');
+            alert(error.message || 'Something went wrong. Please try again or call us directly.');
         } finally {
             setLoading(false);
         }
